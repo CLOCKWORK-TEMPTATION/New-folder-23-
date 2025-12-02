@@ -73,10 +73,10 @@ class HeroConfiguration {
 
       // V-Shape Container (Absolute Positioning)
       containerConstraints: {
-        x: 77,
+        x: 76,
         y: 320,
-        width: 960,
-        height: 515,
+        width: 965,
+        height: 60,
         scale: 1,
         transformOrigin: "",
         borderRadius: "12px",
