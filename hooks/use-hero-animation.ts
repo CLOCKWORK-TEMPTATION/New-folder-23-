@@ -14,7 +14,6 @@ export const useHeroAnimation = (
   triggerRef: RefObject<HTMLDivElement | null>
 ): UseHeroAnimationReturn => {
   const [responsiveValues, setResponsiveValues] = useState<ResponsiveConfig | null>(null)
-  const [isAnimationComplete, setIsAnimationComplete] = useState(false)
 
   // 1. Logic: التعامل مع تغيير حجم الشاشة
   useEffect(() => {
@@ -31,7 +30,6 @@ export const useHeroAnimation = (
   // 2. Logic: التعامل مع التحريك (GSAP)
   useLayoutEffect(() => {
     if (!responsiveValues || !containerRef.current || !triggerRef.current) return
-    if (isAnimationComplete) return // منع إعادة الحساب بعد انتهاء الأنيميشن
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -171,6 +169,7 @@ export const useHeroAnimation = (
           const {
             left, right, bottom,
             x, y, width: absoluteWidth, height: absoluteHeight,
+            scale: configScale,
             transformOrigin,
             borderRadius, border, boxShadow, overflow
           } = responsiveValues.containerConstraints
@@ -182,16 +181,22 @@ export const useHeroAnimation = (
           let targetScale = 1
           let targetX = 0
           let targetY = 0
+          let targetCssHeight: number | null = null
 
           // Logic Branch: Absolute vs Constraint-Based
           if (x !== undefined && y !== undefined && absoluteWidth !== undefined) {
             // 1. Absolute Positioning (User Request)
-            // Calculate Scale based on Width ratio to preserve aspect ratio
+            // ENGINEERING FIX: Use SCALE to shrink the container and everything inside it.
+            // We calculate scale based on the ratio of TargetWidth / ViewportWidth.
             targetScale = absoluteWidth / viewportWidth
-
-            // Position: We use "top left" origin for precise positioning
             targetX = x
             targetY = y
+
+            // To achieve the exact target height visually, we must adjust the CSS height
+            // such that: cssHeight * targetScale = absoluteHeight
+            const absHeightNum = typeof absoluteHeight === 'number' ? absoluteHeight : parseFloat(absoluteHeight as string)
+            targetCssHeight = absHeightNum / targetScale
+
           } else if (left !== undefined && right !== undefined && bottom !== undefined) {
             // 2. Constraint-Based Positioning (Responsive)
             const targetWidth = viewportWidth - left - right
@@ -212,15 +217,12 @@ export const useHeroAnimation = (
             targetY = viewportHeight - bottom - heightPx
           }
 
-          tl.to(".v-shape-container", {
+          const animationProps: any = {
             scale: targetScale,
             x: targetX,
             y: targetY,
-            // IMPORTANT: Do NOT animate width/height. Keep them at 100% to preserve layout.
-            transformOrigin: "top left", // Force top-left for easier coordinate mapping
+            transformOrigin: "top left",
 
-            // Visual Refinements (From Config) with Scale Compensation
-            // ENGINEERING FIX: Divide radius by scale to maintain visual consistency
             borderRadius: borderRadius ? `${parseFloat(borderRadius) / targetScale}px` : "0px",
             border: border || "none",
             boxShadow: boxShadow || "none",
@@ -228,11 +230,17 @@ export const useHeroAnimation = (
 
             duration: 4, // Slower for verification
             ease: "power3.inOut",
+          }
 
+          if (targetCssHeight !== null) {
+            animationProps.height = targetCssHeight
+          }
+
+          tl.to(".v-shape-container", {
+            ...animationProps,
             // AUDIT SCRIPT: Log final coordinates of all 4 corners
             onComplete: () => {
               const rect = container.getBoundingClientRect()
-              const computedStyle = window.getComputedStyle(container)
 
               const corners = {
                 topLeft: { x: rect.left, y: rect.top },
@@ -241,25 +249,18 @@ export const useHeroAnimation = (
                 bottomLeft: { x: rect.left, y: rect.bottom }
               }
 
-              console.group("🔍 AUDIT: V-Shape Container - Final State")
-              console.log("📍 Coordinates (Top-Left):", `(${corners.topLeft.x.toFixed(2)}, ${corners.topLeft.y.toFixed(2)})`)
+              console.group("🔍 AUDIT: V-Shape Container - 4 Corners Coordinates")
+              console.log("📍 Top-Left (x, y):", `(${corners.topLeft.x.toFixed(2)}, ${corners.topLeft.y.toFixed(2)})`)
+              console.log("📍 Top-Right (x, y):", `(${corners.topRight.x.toFixed(2)}, ${corners.topRight.y.toFixed(2)})`)
+              console.log("📍 Bottom-Right (x, y):", `(${corners.bottomRight.x.toFixed(2)}, ${corners.bottomRight.y.toFixed(2)})`)
+              console.log("📍 Bottom-Left (x, y):", `(${corners.bottomLeft.x.toFixed(2)}, ${corners.bottomLeft.y.toFixed(2)})`)
+
               console.log("📏 Dimensions:", {
                 width: rect.width.toFixed(2),
                 height: rect.height.toFixed(2),
                 scale: targetScale.toFixed(4)
               })
-
-              console.group("🎨 Computed Styles")
-              console.log("Border Radius:", computedStyle.borderRadius)
-              console.log("Border:", computedStyle.border)
-              console.log("Box Shadow:", computedStyle.boxShadow)
-              console.log("Transform:", computedStyle.transform)
               console.groupEnd()
-
-              console.groupEnd()
-
-              // تثبيت الموضع بعد انتهاء الأنيميشن
-              setIsAnimationComplete(true)
             }
           })
         }
