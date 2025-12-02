@@ -245,75 +245,46 @@ export const useHeroAnimation = (
       })
 
       // =================================================================================================
-      // PHASE 6: Text Element Swap (Position & Size Exchange)
+      // PHASE 6: Text Content Swap (The Illusion of Swap)
       // =================================================================================================
+      // Only swap text content - keep containers, positions, and styling unchanged
+      // This creates the illusion of a swap without any layout shifts or complex manipulations
 
-      // Phase 6.1: Simultaneous Fade Out
-      // Both text elements fade out at the same time (opacity: 0)
-      tl.to(".text-content-wrapper", {
+      // Fade out both elements simultaneously
+      tl.to([".text-content-wrapper", ".phase-5-wrapper"], {
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut"
-      }, "+=1") // Label: "phase6FadeOut"
+      }, "+=1")
 
-      tl.to(".phase-5-wrapper", {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.inOut"
-      }, "<") // "<" ensures this happens at the same time as the previous animation
+      // Swap only the text content while invisible
+      .call(() => {
+        const mainTitle = document.querySelector(".text-content-wrapper h1")
+        const subTitle = document.querySelector(".phase-5-wrapper p")
 
-      // Phase 6.2: Instant Content & Size Swap (While Both Invisible)
-      // Using gsap.call() to execute synchronous state changes without animation
-      tl.call(() => {
-        console.log("🔄 PHASE 6.2: Swapping text content and sizing classes...")
+        if (mainTitle && subTitle) {
+          // Simple text swap - no class/position changes needed
+          const tempText = mainTitle.textContent || ""
+          mainTitle.textContent = subTitle.textContent || ""
+          subTitle.textContent = tempText
 
-        // Get references to the text elements
-        const textContentWrapper = document.querySelector(".text-content-wrapper")
-        const phase5Wrapper = document.querySelector(".phase-5-wrapper")
-        const textH1 = textContentWrapper?.querySelector("h1")
-        const phase5P = phase5Wrapper?.querySelector("p")
-
-        if (textH1 && phase5P && textContentWrapper && phase5Wrapper) {
-          // Step 1: Swap text content
-          const tempText = textH1.textContent || ""
-          textH1.textContent = phase5P.textContent || ""
-          phase5P.textContent = tempText
-
-          console.log("✅ Text swapped:", {
-            "text-content-wrapper": textH1.textContent,
-            "phase-5-wrapper": phase5P.textContent
+          console.log("✅ PHASE 6: Text swapped successfully", {
+            h1: mainTitle.textContent,
+            p: subTitle.textContent
           })
-
-          // Step 2: Swap font sizing and weight classes
-          // text-content-wrapper: Remove large (font-black, large text sizes), add small (font-light, small text sizes)
-          textH1.classList.remove("text-4xl", "sm:text-5xl", "md:text-7xl", "lg:text-9xl", "font-black")
-          textH1.classList.add("text-lg", "sm:text-xl", "md:text-2xl", "lg:text-3xl", "font-light")
-
-          // phase-5-wrapper: Remove small (font-light, small text sizes), add large (font-black, large text sizes)
-          phase5P.classList.remove("text-lg", "sm:text-xl", "md:text-2xl", "lg:text-3xl", "font-light")
-          phase5P.classList.add("text-4xl", "sm:text-5xl", "md:text-7xl", "lg:text-9xl", "font-black")
-
-          console.log("✅ Classes swapped successfully")
         }
       })
 
-      // Phase 6.3: Simultaneous Fade In
-      // Both text elements fade back in at the same time
-      tl.to(".text-content-wrapper", {
+      // Fade in both elements simultaneously with new text
+      .to([".text-content-wrapper", ".phase-5-wrapper"], {
         opacity: 1,
         duration: 0.5,
         ease: "power2.inOut"
       })
 
-      tl.to(".phase-5-wrapper", {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.inOut"
-      }, "<") // "<" ensures this happens at the same time as the previous animation
-
       // Phase 6.4: Final Fade Out
       // V-Shape container and stacking cards fade out together after a delay
-      tl.to([".v-shape-container", ".stacking-card-0", ".stacking-card-1", ".stacking-card-2"], {
+      tl.to([".v-shape-container", ".stacking-card-0", ".stacking-card-1", ".stacking-card-2", ".stacking-card-3", ".stacking-card-4"], {
         opacity: 0,
         duration: 1,
         ease: "power2.inOut",
