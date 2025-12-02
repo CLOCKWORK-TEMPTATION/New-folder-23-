@@ -4,6 +4,7 @@ export interface ResponsiveConfig {
   cardHeight: number
   fontSize: number
   subtitleSize: number
+  textTopPadding: number
   vShapePositions: Array<{ top: string; left: string; rotation: number }>
   containerConstraints: {
     // Constraint-Based Mode
@@ -59,6 +60,7 @@ class HeroConfiguration {
       cardHeight: isMobile ? 200 : isTablet ? 250 : 300,
       fontSize: isMobile ? 48 : isTablet ? 72 : 96,
       subtitleSize: isMobile ? 18 : isTablet ? 24 : 30,
+      textTopPadding: isMobile ? 128 : 192, // pt-32 (128px) or pt-48 (192px)
 
       // Phase 4: V-Shape Positions
       vShapePositions: [

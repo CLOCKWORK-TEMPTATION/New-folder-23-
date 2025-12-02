@@ -1,0 +1,72 @@
+---
+description: A unified engineering communication and verification protocol for the sake of best practices in UI/UX engineering.
+---
+
+## 1. Communication Policy (Communication Policy)
+* **Primary Language:** Arabic as the primary language for all responses and plain text outputs.
+* **Agenda-oriented:** Professional, engineering, and direct (Result-Oriented). Avoid vague apologies and focus on technical analysis and solution.
+
+## 2. Engineering Standards (Engineering Standards)
+* These standards must be applied before writing a single line of code.
+
+1. Architecture: Object-oriented programming (OOP) and modularity must be adhered to.
+2. Robustness: Use `try/except` and a real logging system instead of unstructured console printing.
+3. Documentation: Explain "why" this engineering decision was made and not "how" the code works.
+
+## 3. Advanced UI/UX Workflow (Advanced UI/UX Workflow)
+* Since you were "forced" to use placeholder images, the single-source-of-truth approach is prohibited and considered harmful.*
+
+**Phase 1: Execution & Instrumentation**
+
+1. Execute the code required.
+2. **Mandatory:** Implement an "audit script" inside the code. The purpose of this script is to print the element coordinates (`getBoundingClientRect`) and computed styles (`getComputedStyle`) to the console at each state change (Animation End, State Change).
+3. Capture the design and take screenshots.
+
+**Phase 2: Empirical Verification - Zero Trust**
+* Note that "they got it right" is not enough. The image may be deceiving, but numeric values cannot be deceived.*
+
+4. **Log Analysis:** Before looking at the "audit script" logs, answer the following questions:
+    * Does the element's position at the animation end match its position in a fixed state?
+    * If the difference is greater than `0.5px`, this is a failure, even if the image appears good.
+
+**Phase 3: Iterative Debugging**
+* It is prohibited to proceed to delivery until there is no conflict in numeric values.*
+
+5. **Gap Analysis:** Compare the frame data before the last frame with the last frame. If there is a significant difference in numerical values, this indicates a "snap" and is a failure.
+
+**Phase 4: Refactoring**
+* Now focus on solidifying the positioning mechanism (e.g., full reliance on `Transform` in both cases).
+
+6. **Refactor:** Fix any potential conflicts or issues in the code.
+
+**Phase 5: Recursion**
+* Go back to step 2.
+
+**Phase 6: Conditional Delivery**
+
+7. **Gap Analysis:** Determine the root cause: Is it a conflict between `Transform` and `Position`? Or is it due to `Layout Thrashing`?
+
+8. **Refactor:** Fix the code to establish a clear positioning mechanism.
+
+9. **Recursion:** Go back to step 2.
+
+**Phase 7: Conditional Delivery**
+
+10. Do not report completion until **numeric** logs match **the requirements**.
+
+11. Provide the complete code (Copy-Paste Ready) along with "Evidence Package" consisting of plain text console logs that confirm the match between the measurements and requirements.
+
+***
+
+4. Protocol for Handling Tool Failures (Tool Failure Protocol)
+Golden rule: "Absence of evidence is not evidence of absence."
+
+In case of any technical error preventing you from making a concrete check (e.g.: Connection Error, Script Timeout, Logs not found):
+
+Immediate Stop (Hard Stop): It is forbidden to provide any inferential or alternative analysis.
+
+Preventing Expectations: It is strictly forbidden to use phrases like "Expected Result" or "Theoretically should work".
+
+Failure Reporting: Your only report shall be:
+
+"⚠️ Check Failure: Unable to reach the page/obtain logs. I cannot confirm the solution's safety. Test environment needs to be fixed first."

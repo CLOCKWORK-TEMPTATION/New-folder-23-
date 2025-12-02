@@ -31,14 +31,14 @@ export const useHeroAnimation = (
   // 2. Logic: التعامل مع التحريك (GSAP)
   useLayoutEffect(() => {
     if (!responsiveValues || !containerRef.current || !triggerRef.current) return
-    if (isAnimationComplete) return // منع إعادة الحساب بعد انتهاء الأنيميشن
+    if (isAnimationComplete) return
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top",
-          end: "+=8000",
+          end: "+=10000", // Extended for Phase 6
           scrub: 2.5,
           pin: true,
           anticipatePin: 1,
@@ -82,7 +82,7 @@ export const useHeroAnimation = (
             ease: "power2.out",
             zIndex: 30,
           },
-          "<", // Start at the same time as the previous animation
+          "<",
         )
 
         // Phase 3: Text Lock in Place & Cards Start Appearing
@@ -105,7 +105,7 @@ export const useHeroAnimation = (
           "<",
         )
 
-      // Phase 3: Card Animation Setup - Cards enter from bottom continuously
+      // Phase 3: Card Animation Setup
       const phase3Images = gsap.utils.toArray(".phase-3-img") as HTMLElement[]
       phase3Images.forEach((img, i) => {
         const staggerDelay = i * 0.15
@@ -120,7 +120,7 @@ export const useHeroAnimation = (
         )
       })
 
-      // Phase 4: V-Shape Formation with smooth transition
+      // Phase 4: V-Shape Formation
       tl.to(
         ".phase-3-img",
         {
@@ -152,7 +152,7 @@ export const useHeroAnimation = (
         ease: "power2.inOut"
       }, "+=0.5")
 
-        // Reveal "النسخة" title, ensuring it starts at the same Y position as dedication
+        // Reveal "النسخة" title
         .set(".phase-5-wrapper", { y: -240 }, "<")
         .to(".phase-5-wrapper", {
           opacity: 1,
@@ -161,13 +161,9 @@ export const useHeroAnimation = (
         }, "<+=0.2")
 
       // 5.2: Move V-Shape Container to Bottom Left & Scale Down
-      // ENGINEERING FIX: Pure Scale-Based Animation
-      // WHY: To preserve the internal composition (relationship between text and cards), we must NOT change the container's Width/Height.
-      // HOW: We keep the container at 100% size and use `scale` to shrink it to the target dimensions.
       if (responsiveValues.containerConstraints) {
         const container = document.querySelector(".v-shape-container") as HTMLElement
         if (container) {
-          console.log("DEBUG: containerConstraints", responsiveValues.containerConstraints);
           const {
             left, right, bottom,
             x, y, width: absoluteWidth, height: absoluteHeight,
@@ -175,7 +171,6 @@ export const useHeroAnimation = (
             borderRadius, border, boxShadow, overflow
           } = responsiveValues.containerConstraints
 
-          // Calculate target position in viewport coordinates
           const viewportWidth = window.innerWidth
           const viewportHeight = window.innerHeight
 
@@ -183,22 +178,15 @@ export const useHeroAnimation = (
           let targetX = 0
           let targetY = 0
 
-          // Logic Branch: Absolute vs Constraint-Based
           if (x !== undefined && y !== undefined && absoluteWidth !== undefined) {
-            // 1. Absolute Positioning (User Request)
-            // Calculate Scale based on Width ratio to preserve aspect ratio
             targetScale = absoluteWidth / viewportWidth
-
-            // Position: We use "top left" origin for precise positioning
             targetX = x
             targetY = y
           } else if (left !== undefined && right !== undefined && bottom !== undefined) {
-            // 2. Constraint-Based Positioning (Responsive)
             const targetWidth = viewportWidth - left - right
             targetScale = targetWidth / viewportWidth
             targetX = left
 
-            // Calculate Y based on Bottom constraint
             let heightPx = 0
             if (typeof absoluteHeight === 'string' && absoluteHeight.includes("vh")) {
               heightPx = (parseFloat(absoluteHeight) / 100) * viewportHeight
@@ -216,51 +204,13 @@ export const useHeroAnimation = (
             scale: targetScale,
             x: targetX,
             y: targetY,
-            // IMPORTANT: Do NOT animate width/height. Keep them at 100% to preserve layout.
-            transformOrigin: "top left", // Force top-left for easier coordinate mapping
-
-            // Visual Refinements (From Config) with Scale Compensation
-            // ENGINEERING FIX: Divide radius by scale to maintain visual consistency
+            transformOrigin: "top left",
             borderRadius: borderRadius ? `${parseFloat(borderRadius) / targetScale}px` : "0px",
             border: border || "none",
             boxShadow: boxShadow || "none",
             overflow: overflow || "visible",
-
-            duration: 4, // Slower for verification
+            duration: 4,
             ease: "power3.inOut",
-
-            // AUDIT SCRIPT: Log final coordinates of all 4 corners
-            onComplete: () => {
-              const rect = container.getBoundingClientRect()
-              const computedStyle = window.getComputedStyle(container)
-
-              const corners = {
-                topLeft: { x: rect.left, y: rect.top },
-                topRight: { x: rect.right, y: rect.top },
-                bottomRight: { x: rect.right, y: rect.bottom },
-                bottomLeft: { x: rect.left, y: rect.bottom }
-              }
-
-              console.group("🔍 AUDIT: V-Shape Container - Final State")
-              console.log("📍 Coordinates (Top-Left):", `(${corners.topLeft.x.toFixed(2)}, ${corners.topLeft.y.toFixed(2)})`)
-              console.log("📏 Dimensions:", {
-                width: rect.width.toFixed(2),
-                height: rect.height.toFixed(2),
-                scale: targetScale.toFixed(4)
-              })
-
-              console.group("🎨 Computed Styles")
-              console.log("Border Radius:", computedStyle.borderRadius)
-              console.log("Border:", computedStyle.border)
-              console.log("Box Shadow:", computedStyle.boxShadow)
-              console.log("Transform:", computedStyle.transform)
-              console.groupEnd()
-
-              console.groupEnd()
-
-              // تثبيت الموضع بعد انتهاء الأنيميشن
-              setIsAnimationComplete(true)
-            }
           })
         }
       }
@@ -276,7 +226,7 @@ export const useHeroAnimation = (
             y: "120vh",
             opacity: 0,
             scale: 0.8,
-            rotation: cardConfig.rotation + (Math.random() * 10 - 5) // Random start rotation
+            rotation: cardConfig.rotation + (Math.random() * 10 - 5)
           },
           {
             y: 0,
@@ -290,13 +240,94 @@ export const useHeroAnimation = (
             duration: 1.5,
             ease: "power2.out"
           },
-          `+=${i === 0 ? 0.2 : 0.5}` // Stagger delay: first one comes quickly, others follow
+          `+=${i === 0 ? 0.2 : 0.5}`
         )
       })
-    }, containerRef)
 
-    return () => ctx.revert()
-  }, [responsiveValues])
+      // =================================================================================================
+      // PHASE 6: Text Element Swap (Position & Size Exchange)
+      // =================================================================================================
+
+      // Phase 6.1: Simultaneous Fade Out
+      // Both text elements fade out at the same time (opacity: 0)
+      tl.to(".text-content-wrapper", {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut"
+      }, "+=1") // Label: "phase6FadeOut"
+
+      tl.to(".phase-5-wrapper", {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut"
+      }, "<") // "<" ensures this happens at the same time as the previous animation
+
+      // Phase 6.2: Instant Content & Size Swap (While Both Invisible)
+      // Using gsap.call() to execute synchronous state changes without animation
+      tl.call(() => {
+        console.log("🔄 PHASE 6.2: Swapping text content and sizing classes...")
+
+        // Get references to the text elements
+        const textContentWrapper = document.querySelector(".text-content-wrapper")
+        const phase5Wrapper = document.querySelector(".phase-5-wrapper")
+        const textH1 = textContentWrapper?.querySelector("h1")
+        const phase5P = phase5Wrapper?.querySelector("p")
+
+        if (textH1 && phase5P && textContentWrapper && phase5Wrapper) {
+          // Step 1: Swap text content
+          const tempText = textH1.textContent || ""
+          textH1.textContent = phase5P.textContent || ""
+          phase5P.textContent = tempText
+
+          console.log("✅ Text swapped:", {
+            "text-content-wrapper": textH1.textContent,
+            "phase-5-wrapper": phase5P.textContent
+          })
+
+          // Step 2: Swap font sizing and weight classes
+          // text-content-wrapper: Remove large (font-black, large text sizes), add small (font-light, small text sizes)
+          textH1.classList.remove("text-4xl", "sm:text-5xl", "md:text-7xl", "lg:text-9xl", "font-black")
+          textH1.classList.add("text-lg", "sm:text-xl", "md:text-2xl", "lg:text-3xl", "font-light")
+
+          // phase-5-wrapper: Remove small (font-light, small text sizes), add large (font-black, large text sizes)
+          phase5P.classList.remove("text-lg", "sm:text-xl", "md:text-2xl", "lg:text-3xl", "font-light")
+          phase5P.classList.add("text-4xl", "sm:text-5xl", "md:text-7xl", "lg:text-9xl", "font-black")
+
+          console.log("✅ Classes swapped successfully")
+        }
+      })
+
+      // Phase 6.3: Simultaneous Fade In
+      // Both text elements fade back in at the same time
+      tl.to(".text-content-wrapper", {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.inOut"
+      })
+
+      tl.to(".phase-5-wrapper", {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.inOut"
+      }, "<") // "<" ensures this happens at the same time as the previous animation
+
+      // Phase 6.4: Final Fade Out
+      // V-Shape container and stacking cards fade out together after a delay
+      tl.to([".v-shape-container", ".stacking-card-0", ".stacking-card-1", ".stacking-card-2"], {
+        opacity: 0,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          setIsAnimationComplete(true)
+        }
+      }, "+=2")
+    })
+
+    return () => {
+      ctx.revert()
+      ScrollTrigger.getById("hero-scroll")?.kill()
+    }
+  }, [responsiveValues, isAnimationComplete])
 
   return { responsiveValues }
 }
