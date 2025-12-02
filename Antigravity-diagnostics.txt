@@ -1,0 +1,184 @@
+{
+  "isRemote": false,
+  "systemInfo": {
+    "operatingSystem": "windows",
+    "timestamp": "2025-11-29T05:46:15.432Z",
+    "userEmail": "m.amin.radyahmed@gmail.com",
+    "userName": "m.amin"
+  },
+  "userSettings": {
+    "userSettings": {
+      "openMostRecentChatConversation": true,
+      "lastSelectedModel": 0,
+      "themePreference": 0,
+      "extensionPanelTab": 0,
+      "fontSize": 0,
+      "rememberLastModelSelection": 0,
+      "autocompleteSpeed": 0,
+      "lastSelectedModelName": "",
+      "googleAgentNuxStates": [],
+      "seenNuxUids": {},
+      "googleAgentAllowedCommands": [],
+      "googleAgentDeniedCommands": [],
+      "userNuxStates": [],
+      "googleAgentWebSearchDisabled": false,
+      "tabEnabled": 0,
+      "disableSelectionPopup": false,
+      "disableExplainProblemInlayHint": false,
+      "disableInlayHintShortcuts": false,
+      "disableOpengoogleAgentOnReload": false,
+      "disableAutoOpenEditedFiles": false,
+      "disableTabToJump": false,
+      "googleAgentAutoExecutionPolicy": 0,
+      "explainAndFixInCurrentConversation": false,
+      "allowgoogleAgentAccessGitignoreFiles": false,
+      "allowAgentAccessNonWorkspaceFiles": false,
+      "disablegoogleAgentAutoFixLints": false,
+      "disablegoogleAgentBrowserPreviews": false,
+      "detectAndUseProxy": 0,
+      "disableTabToImport": false,
+      "useClipboardForCompletions": false,
+      "disableHighlightAfterAccept": false,
+      "lastSelectedNewConvoTab": "",
+      "disableAutoGenerateMemories": false,
+      "enableSoundsForSpecialEvents": false,
+      "enableTabSounds": false,
+      "allowgoogleAgentInBackground": false,
+      "tabToJump": 0,
+      "googleAgentWebSearch": 0,
+      "enableTerminalCompletion": false,
+      "isSnoozed": false,
+      "featureUsageData": {},
+      "disablegoogleAgentInBackground": false,
+      "customWorkspace": [],
+      "conversationBrainConfigs": {},
+      "globalPlanModePreference": 0,
+      "cachedgoogleAgentModelConfigs": [],
+      "cachedgoogleAgentModelSorts": [],
+      "googleAgentRunExtensionCode": 0,
+      "googleAgentRunExtensionCodeAutoRun": 0,
+      "googleAgentInputAutocomplete": 0,
+      "autoContinueOnMaxGeneratorInvocations": 0,
+      "recentlyUsedgoogleAgentModels": [],
+      "annotationsConfig": 0,
+      "enableAutomaticScreenshot": false,
+      "relativeWorkingDirPaths": [],
+      "customModels": {},
+      "disableCodeSnippetTelemetry": false,
+      "planningMode": 0,
+      "agentBrowserTools": 0,
+      "artifactReviewMode": 0,
+      "browserOnboarded": false,
+      "allowTabAccessGitignoreFiles": false,
+      "browserChromePath": "",
+      "browserUserProfilePath": "",
+      "browserCdpPort": 0,
+      "demoModeEnabled": false,
+      "browserJsExecutionPolicy": 0
+    }
+  },
+  "extensionLogs": [
+    "2025-11-29 07:45:28.231 [info] 2025/11/29 07:45:28 maxprocs: Leaving GOMAXPROCS=4: CPU quota undefined",
+    "2025-11-29 07:45:29.000 [info] I1129 07:45:29.000105  6532 main.go:183] Setting GOMAXPROCS to 4",
+    "2025-11-29 07:45:29.012 [info] I1129 07:45:29.011135  6532 main.go:294] Starting language server process with pid 6532",
+    "2025-11-29 07:45:29.012 [info] I1129 07:45:29.011135  6532 server.go:228] Language server will attempt to listen on host 127.0.0.1",
+    "2025-11-29 07:45:29.013 [info] I1129 07:45:29.013161  6532 server.go:235] Language server listening on random port at 54284 for HTTPS",
+    "2025-11-29 07:45:29.013 [info] I1129 07:45:29.013161  6532 server.go:242] Language server listening on random port at 54285 for HTTP",
+    "2025-11-29 07:45:29.539 [info] I1129 07:45:29.525705  6532 server.go:326] Created extension server client at port 54276",
+    "2025-11-29 07:45:29.694 [info] W1129 07:45:29.694503  6532 log_context.go:106] Cache(userInfo): Singleflight refresh failed: You are not logged into Antigravity.",
+    "2025-11-29 07:45:29.720 [info] I1129 07:45:29.715919  6532 server.go:343] initialized server successfully",
+    "2025-11-29 07:45:29.765 [info] (Antigravity) 2025-11-29 07:45:29.764 [INFO]: Language server started",
+    "2025-11-29 07:45:29.788 [info] W1129 07:45:29.738290  6532 log_context.go:106] Cache(userInfo): Singleflight refresh failed: You are not logged into Antigravity.",
+    "2025-11-29 07:45:29.956 [info] 2025/11/29 07:45:29 http: TLS handshake error from 127.0.0.1:54300: read tcp 127.0.0.1:54284->127.0.0.1:54300: wsarecv: An established connection was aborted by the software in your host machine.",
+    "2025-11-29 07:45:29.956 [info] 2025/11/29 07:45:29 http: TLS handshake error from 127.0.0.1:54301: read tcp 127.0.0.1:54284->127.0.0.1:54301: wsarecv: An established connection was aborted by the software in your host machine.",
+    "2025-11-29 07:45:30.508 [info] (Antigravity) 2025-11-29 07:45:30.508 [INFO]: LS lspClient started successfully"
+  ],
+  "mainThreadLogs": {
+    "artifacts": []
+  },
+  "languageServerLogs": {
+    "logs": [
+      "I1129 07:45:29.000105  6532 main.go:183] Setting GOMAXPROCS to 4\n",
+      "I1129 07:45:29.011135  6532 main.go:294] Starting language server process with pid 6532\n",
+      "I1129 07:45:29.011135  6532 server.go:228] Language server will attempt to listen on host 127.0.0.1\n",
+      "I1129 07:45:29.013161  6532 server.go:235] Language server listening on random port at 54284 for HTTPS\n",
+      "I1129 07:45:29.013161  6532 server.go:242] Language server listening on random port at 54285 for HTTP\n",
+      "I1129 07:45:29.525705  6532 server.go:326] Created extension server client at port 54276\n",
+      "W1129 07:45:29.694503  6532 log_context.go:106] Cache(userInfo): Singleflight refresh failed: You are not logged into Antigravity.\n",
+      "I1129 07:45:29.715919  6532 server.go:343] initialized server successfully\n",
+      "W1129 07:45:29.738290  6532 log_context.go:106] Cache(userInfo): Singleflight refresh failed: You are not logged into Antigravity.\n"
+    ]
+  },
+  "recentTrajectories": [
+    {
+      "googleAgentId": "c155e774-1602-4793-b6e6-6da77fb9f6b3",
+      "trajectoryId": "4ed6893b-d759-4dce-ab7e-013e50659e45",
+      "summary": "Resolving Lockfile Conflict",
+      "lastStepIndex": 74,
+      "lastModifiedTime": "2025-11-29T05:16:09.585Z"
+    },
+    {
+      "googleAgentId": "e8f61b44-5588-4428-a943-319f8d9d02dd",
+      "trajectoryId": "a5da28e2-5e10-4478-b718-53bfcb098ecf",
+      "summary": "Adding Nx to Project",
+      "lastStepIndex": 18,
+      "lastModifiedTime": "2025-11-29T04:27:12.284Z"
+    },
+    {
+      "googleAgentId": "c4e76e2d-c96b-4bbd-b358-b18c9a1bae8f",
+      "trajectoryId": "bb6f1ac5-02da-440e-a4f9-e9a26626431f",
+      "summary": "Separating Dedication Layer",
+      "lastStepIndex": 121,
+      "lastModifiedTime": "2025-11-29T04:26:36.240Z"
+    },
+    {
+      "googleAgentId": "f3a6ac49-2e6c-4470-bd50-7c1a7737d9ce",
+      "trajectoryId": "b02ca59c-8e34-47f3-842f-b121383db527",
+      "summary": "Create Remote Push Local",
+      "lastStepIndex": 36,
+      "lastModifiedTime": "2025-11-28T18:48:33.737Z"
+    },
+    {
+      "googleAgentId": "b949224c-6854-457e-8927-6b7e46244c26",
+      "trajectoryId": "0995d3e9-c4c1-480f-a39d-385d92c74a65",
+      "summary": "Adjust \"بس اصلي\" Position",
+      "lastStepIndex": 79,
+      "lastModifiedTime": "2025-11-28T18:04:27.031Z"
+    },
+    {
+      "googleAgentId": "a4cb5fe3-0f3b-43cf-8676-547d4160fc9b",
+      "trajectoryId": "61fab84a-3bd6-4614-b6f5-48fca18a2293",
+      "summary": "Refactoring Hero Animation Component",
+      "lastStepIndex": 114,
+      "lastModifiedTime": "2025-11-28T15:19:25.178Z"
+    },
+    {
+      "googleAgentId": "cc38fce7-e997-4b0c-a7fe-11779e21f249",
+      "trajectoryId": "a9516284-e3cf-467f-ba85-dc6f914d3872",
+      "summary": "Implementing Scroll Animation",
+      "lastStepIndex": 12,
+      "lastModifiedTime": "2025-11-28T10:57:22.676Z"
+    },
+    {
+      "googleAgentId": "9f23a7b4-00ae-4a97-a2c5-55f71db25d24",
+      "trajectoryId": "67f67a0f-763f-40fb-8622-65c1769dce2b",
+      "summary": "Delete Git Folder",
+      "lastStepIndex": 15,
+      "lastModifiedTime": "2025-11-28T09:33:30.903Z"
+    },
+    {
+      "googleAgentId": "7c375fe7-ff6c-41cf-b637-d326bcd80480",
+      "trajectoryId": "e0be61d0-01ab-4f93-9ffc-08a3e7124d2b",
+      "summary": "Revert To Specific Commit",
+      "lastStepIndex": 37,
+      "lastModifiedTime": "2025-11-28T09:17:48.102Z"
+    },
+    {
+      "googleAgentId": "372a06db-137b-4ca7-ae6f-c3fb250faa78",
+      "trajectoryId": "8970b871-51bb-4318-b492-bbac25632773",
+      "summary": "Implementing Scroll Animation",
+      "lastStepIndex": 103,
+      "lastModifiedTime": "2025-11-28T07:19:21.535Z"
+    }
+  ]
+}
