@@ -42,7 +42,7 @@ export const HeroAnimation = () => {
         <div className="v-shape-container absolute top-0 left-0 w-full h-full z-40 m-0 p-0">
           {/* Main Text Content */}
           <div className="main-content-wrapper relative flex flex-col items-center justify-center text-center w-full h-full">
-            <div className="text-content-wrapper flex flex-col items-center justify-center w-auto z-30 -ml-1.5">
+            <div className="text-content-wrapper flex flex-col items-center justify-center w-auto z-30 -ml-0.5">
               <h1 className="text-main text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter leading-tight text-center">
                 بس اصلي
               </h1>
@@ -91,7 +91,7 @@ export const HeroAnimation = () => {
         <div className="dedication-layer absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
           {/* Spacer to match the text position roughly if needed, or rely on GSAP y positioning */}
           <div className="dedication-wrapper flex flex-col items-center justify-center w-auto -ml-30 pt-32 md:pt-48">
-            <p className="text-dedication text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-dedication-color mt-1 md:mt-2 text-center">
+            <p className="text-dedication text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-dedication-color mt-1 md:mt-0.5 text-center">
               اهداء ليسري نصر الله
             </p>
           </div>

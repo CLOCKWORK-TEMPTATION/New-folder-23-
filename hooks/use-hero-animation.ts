@@ -63,7 +63,7 @@ export const useHeroAnimation = (
           { opacity: 0, y: 300, scale: 0.9 },
           {
             opacity: 1,
-            y: -230,
+            y: -240,
             scale: 1,
             duration: 2,
             ease: "power2.out",
@@ -89,7 +89,7 @@ export const useHeroAnimation = (
         .to(
           ".text-content-wrapper",
           {
-            y: -230,
+            y: -240,
             duration: 1,
             ease: "none",
           },
