@@ -257,41 +257,77 @@ export const useHeroAnimation = (
         ease: "power2.inOut"
       }, "+=1")
 
-      // Swap only the text content while invisible
-      .call(() => {
-        const mainTitle = document.querySelector(".text-content-wrapper h1")
-        const subTitle = document.querySelector(".phase-5-wrapper p")
+        // Swap only the text content while invisible
+        .call(() => {
+          const mainTitle = document.querySelector(".text-content-wrapper h1")
+          const subTitle = document.querySelector(".phase-5-wrapper p")
 
-        if (mainTitle && subTitle) {
-          // Simple text swap - no class/position changes needed
-          const tempText = mainTitle.textContent || ""
-          mainTitle.textContent = subTitle.textContent || ""
-          subTitle.textContent = tempText
+          if (mainTitle && subTitle) {
+            // Simple text swap - no class/position changes needed
+            const tempText = mainTitle.textContent || ""
+            mainTitle.textContent = subTitle.textContent || ""
+            subTitle.textContent = tempText
 
-          console.log("✅ PHASE 6: Text swapped successfully", {
-            h1: mainTitle.textContent,
-            p: subTitle.textContent
-          })
-        }
-      })
+            console.log("✅ PHASE 6: Text swapped successfully", {
+              h1: mainTitle.textContent,
+              p: subTitle.textContent
+            })
+          }
+        })
 
-      // Fade in both elements simultaneously with new text
-      .to([".text-content-wrapper", ".phase-5-wrapper"], {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.inOut"
-      })
+        // Fade in both elements simultaneously with new text
+        .to([".text-content-wrapper", ".phase-5-wrapper"], {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.inOut"
+        })
 
-      // Phase 6.4: Final Fade Out
-      // V-Shape container and stacking cards fade out together after a delay
-      tl.to([".v-shape-container", ".stacking-card-0", ".stacking-card-1", ".stacking-card-2", ".stacking-card-3", ".stacking-card-4"], {
-        opacity: 0,
-        duration: 1,
+      // Phase 7: Unification & Exit (The "Return" / Zoom Out)
+      // =================================================================================================
+      // Treat V-Shape cards + New Text as ONE entity.
+      // Animate them together to simulate a unified exit/transformation.
+
+      const unifiedElements = [
+        ".v-shape-container"
+        // Children (.text-content-wrapper, .phase-5-wrapper, .phase-3-img) will inherit the transform automatically.
+        // Stacking cards are siblings, so they won't be affected.
+      ]
+
+      tl.to(unifiedElements, {
+        scaleX: 0.6,        // Keep width original
+        scaleY: 0.28,      // Shrink height to 50%
+        x: 93,             // 📍 [تحكم هنا] الإزاحة الأفقية (0 = نفس المكان)
+        y: 330,             // 📍 [تحكم هنا] الإزاحة الرأسية (0 = نفس المكان)
+        transformOrigin: "top left", // Ensure it shrinks upwards/downwards from the fixed top-left position
+        duration: 2,
         ease: "power2.inOut",
+        onStart: () => {
+          console.log("🚀 PHASE 7 START: Unified Exit (Squash Only) Initiated")
+        },
         onComplete: () => {
-          setIsAnimationComplete(true)
+          // setIsAnimationComplete(true) // REMOVED: Caused reset
+
+          // AUDIT: Final Coordinates
+          const container = document.querySelector(".v-shape-container")
+          if (container) {
+            const rect = container.getBoundingClientRect()
+            console.log("📍 AUDIT: Phase 7 End Coordinates (x, y, h):", {
+              x: rect.left,
+              y: rect.top,
+              h: rect.height,
+              w: rect.width
+            })
+          }
         }
-      }, "+=2")
+      }, "+=1") // Small pause after the swap before this starts
+
+      // Phase 8: Hold / Freeze
+      // =================================================================================================
+      // Keep everything fixed in place for a while after the shrink
+      tl.to({}, {
+        duration: 2, // Adjust this value to control how long it stays fixed
+        onStart: () => console.log("🛑 PHASE 8: Hold/Freeze Initiated")
+      })
     })
 
     return () => {
