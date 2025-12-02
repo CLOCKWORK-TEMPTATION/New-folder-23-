@@ -14,7 +14,6 @@ export const useHeroAnimation = (
   triggerRef: RefObject<HTMLDivElement | null>
 ): UseHeroAnimationReturn => {
   const [responsiveValues, setResponsiveValues] = useState<ResponsiveConfig | null>(null)
-  const [isAnimationComplete, setIsAnimationComplete] = useState(false)
 
   // 1. Logic: التعامل مع تغيير حجم الشاشة
   useEffect(() => {
@@ -31,7 +30,6 @@ export const useHeroAnimation = (
   // 2. Logic: التعامل مع التحريك (GSAP)
   useLayoutEffect(() => {
     if (!responsiveValues || !containerRef.current || !triggerRef.current) return
-    if (isAnimationComplete) return // منع إعادة الحساب بعد انتهاء الأنيميشن
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -243,7 +241,6 @@ export const useHeroAnimation = (
             // AUDIT SCRIPT: Log final coordinates of all 4 corners
             onComplete: () => {
               const rect = container.getBoundingClientRect()
-              const computedStyle = window.getComputedStyle(container)
 
               const corners = {
                 topLeft: { x: rect.left, y: rect.top },
@@ -252,25 +249,18 @@ export const useHeroAnimation = (
                 bottomLeft: { x: rect.left, y: rect.bottom }
               }
 
-              console.group("🔍 AUDIT: V-Shape Container - Final State")
-              console.log("📍 Coordinates (Top-Left):", `(${corners.topLeft.x.toFixed(2)}, ${corners.topLeft.y.toFixed(2)})`)
+              console.group("🔍 AUDIT: V-Shape Container - 4 Corners Coordinates")
+              console.log("📍 Top-Left (x, y):", `(${corners.topLeft.x.toFixed(2)}, ${corners.topLeft.y.toFixed(2)})`)
+              console.log("📍 Top-Right (x, y):", `(${corners.topRight.x.toFixed(2)}, ${corners.topRight.y.toFixed(2)})`)
+              console.log("📍 Bottom-Right (x, y):", `(${corners.bottomRight.x.toFixed(2)}, ${corners.bottomRight.y.toFixed(2)})`)
+              console.log("📍 Bottom-Left (x, y):", `(${corners.bottomLeft.x.toFixed(2)}, ${corners.bottomLeft.y.toFixed(2)})`)
+
               console.log("📏 Dimensions:", {
                 width: rect.width.toFixed(2),
                 height: rect.height.toFixed(2),
                 scale: targetScale.toFixed(4)
               })
-
-              console.group("🎨 Computed Styles")
-              console.log("Border Radius:", computedStyle.borderRadius)
-              console.log("Border:", computedStyle.border)
-              console.log("Box Shadow:", computedStyle.boxShadow)
-              console.log("Transform:", computedStyle.transform)
               console.groupEnd()
-
-              console.groupEnd()
-
-              // تثبيت الموضع بعد انتهاء الأنيميشن
-              setIsAnimationComplete(true)
             }
           })
         }
