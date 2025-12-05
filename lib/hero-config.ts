@@ -36,6 +36,14 @@ export interface ResponsiveConfig {
     width?: string;
     height?: string;
   }>
+  surroundingCards: Array<{
+    top: string;
+    left: string;
+    width: string;
+    height: string;
+    initialX: number;
+    initialY: number;
+  }>
 }
 
 class HeroConfiguration {
@@ -52,25 +60,26 @@ class HeroConfiguration {
   }
 
   public getResponsiveValues(width: number): ResponsiveConfig {
-    const isMobile = width < 768
-    const isTablet = width < 1024
+    // ⚠️ DESKTOP ONLY - تجاوب معطل مؤقتاً للتركيز على التصميم
+    // TODO: إعادة تفعيل التجاوب بعد اكتمال المرحلة 7
 
     return {
-      cardWidth: isMobile ? 160 : isTablet ? 200 : 240,
-      cardHeight: isMobile ? 200 : isTablet ? 250 : 300,
-      fontSize: isMobile ? 48 : isTablet ? 72 : 96,
-      subtitleSize: isMobile ? 18 : isTablet ? 24 : 30,
-      textTopPadding: isMobile ? 128 : 192, // pt-32 (128px) or pt-48 (192px)
+      // Desktop Fixed Values (1920x1080)
+      cardWidth: 240,
+      cardHeight: 300,
+      fontSize: 96,
+      subtitleSize: 30,
+      textTopPadding: 192,
 
-      // Phase 4: V-Shape Positions
+      // Phase 4: V-Shape Positions (Desktop Only)
       vShapePositions: [
-        { top: "33%", left: isMobile ? "65%" : isTablet ? "70%" : "70%", rotation: 20 },
-        { top: "52%", left: isMobile ? "25%" : isTablet ? "75%" : "65%", rotation: 15 },
-        { top: "72%", left: isMobile ? "35%" : isTablet ? "60%" : "60%", rotation: 8 },
+        { top: "33%", left: "70%", rotation: 20 },
+        { top: "52%", left: "65%", rotation: 15 },
+        { top: "72%", left: "60%", rotation: 8 },
         { top: "82%", left: "50%", rotation: 0 },
-        { top: "72%", left: isMobile ? "65%" : isTablet ? "40%" : "40%", rotation: -8 },
-        { top: "52%", left: isMobile ? "75%" : isTablet ? "40%" : "35%", rotation: -15 },
-        { top: "33%", left: isMobile ? "35%" : isTablet ? "30%" : "30%", rotation: -20 },
+        { top: "72%", left: "40%", rotation: -8 },
+        { top: "52%", left: "35%", rotation: -15 },
+        { top: "33%", left: "30%", rotation: -20 },
       ],
 
       // V-Shape Container (Absolute Positioning)
@@ -96,6 +105,33 @@ class HeroConfiguration {
         // Right Column (2 Images)
         { top: "36%", left: "67%", rotation: 0, scale: 1, width: "28vw", height: "28vh" }, // Middle-Right
         { top: "67%", left: "67%", rotation: 0, scale: 1, width: "28vw", height: "28vh" }, // Bottom-Right
+      ],
+
+      // Phase 7: Surrounding Cards (L-Shape - 7 صور جديدة)
+      // =================================================================
+      // التصميم النهائي:
+      // [1] [2] [3] [4]    ← الصف العلوي (stacking cards موجودة)
+      // [5]   [V-Shape] [6]    ← الصف الأوسط العلوي
+      // [7]   [V-Shape] [8]    ← الصف الأوسط السفلي
+      // [9] [10] [11] [12]  ← الصف السفلي (جديد بالكامل)
+      //
+      // العمود الأيسر الجديد: 5, 7, 9 (3 صور)
+      // الصف السفلي الجديد: 9, 10, 11, 12 (4 صور)
+      // المجموع: 7 صور (الزاوية 9 مشتركة)
+      // =================================================================
+      surroundingCards: [
+        // الصف العلوي - صورة 4 (أقصى اليمين - لإكمال الصف)
+        { top: "3%", left: "75%", width: "22vw", height: "22vh", initialX: 80, initialY: -50 },
+
+        // العمود الأيسر (3 صور: 5, 7, 9)
+        { top: "26%", left: "3%", width: "22vw", height: "22vh", initialX: -80, initialY: 0 },   // صورة 5
+        { top: "50%", left: "3%", width: "22vw", height: "22vh", initialX: -80, initialY: 0 },   // صورة 7
+        { top: "75%", left: "3%", width: "22vw", height: "22vh", initialX: -50, initialY: 80 },  // صورة 9 (الزاوية)
+
+        // الصف السفلي (3 صور إضافية: 10, 11, 12)
+        { top: "75%", left: "26%", width: "22vw", height: "22vh", initialX: 0, initialY: 80 },   // صورة 10
+        { top: "75%", left: "50%", width: "22vw", height: "22vh", initialX: 0, initialY: 80 },   // صورة 11
+        { top: "75%", left: "75%", width: "22vw", height: "22vh", initialX: 50, initialY: 80 },  // صورة 12
       ]
     }
   }

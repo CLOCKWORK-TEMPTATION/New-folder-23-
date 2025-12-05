@@ -11,10 +11,10 @@ interface StackingImageCardProps {
   height?: string
 }
 
-export const StackingImageCard = ({ 
-  src, 
-  alt, 
-  index, 
+export const StackingImageCard = ({
+  src,
+  alt,
+  index,
   className = "",
   width = "clamp(200px, 30vw, 400px)",
   height = "auto"

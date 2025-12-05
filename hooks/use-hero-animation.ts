@@ -282,51 +282,72 @@ export const useHeroAnimation = (
           ease: "power2.inOut"
         })
 
-      // Phase 7: Unification & Exit (The "Return" / Zoom Out)
+      // Phase 7: Shrink & Surround
       // =================================================================================================
-      // Treat V-Shape cards + New Text as ONE entity.
-      // Animate them together to simulate a unified exit/transformation.
+      // الخطة:
+      // 7.1: تقليص global-scene-container بالكامل (V-Shape + 5 صور + 5 صور جديدة)
+      //      هذا يضمن أن كل العناصر تتقلص معاً بنفس النسبة
+      // 7.2: الـ surroundingCards ستظهر في مواقعها المحددة
+      // =================================================================================================
 
-      const unifiedElements = [
-        ".v-shape-container"
-        // Children (.text-content-wrapper, .phase-5-wrapper, .phase-3-img) will inherit the transform automatically.
-        // Stacking cards are siblings, so they won't be affected.
-      ]
+      tl.addLabel("phase7Start", "+=0.5")
 
-      tl.to(unifiedElements, {
-        scaleX: 0.6,        // Keep width original
-        scaleY: 0.28,      // Shrink height to 50%
-        x: 93,             // 📍 [تحكم هنا] الإزاحة الأفقية (0 = نفس المكان)
-        y: 330,             // 📍 [تحكم هنا] الإزاحة الرأسية (0 = نفس المكان)
-        transformOrigin: "top left", // Ensure it shrinks upwards/downwards from the fixed top-left position
-        duration: 2,
+      // 7.1: تقليص المشهد العام بالكامل
+      tl.to(".global-scene-container", {
+        scale: 0.6,
+        transformOrigin: "center center",
+        duration: 2.5,
         ease: "power2.inOut",
-        onStart: () => {
-          console.log("🚀 PHASE 7 START: Unified Exit (Squash Only) Initiated")
-        },
+        onStart: () => console.log("🚀 PHASE 7.1: Shrinking global-scene-container"),
         onComplete: () => {
-          // setIsAnimationComplete(true) // REMOVED: Caused reset
-
-          // AUDIT: Final Coordinates
-          const container = document.querySelector(".v-shape-container")
-          if (container) {
-            const rect = container.getBoundingClientRect()
-            console.log("📍 AUDIT: Phase 7 End Coordinates (x, y, h):", {
-              x: rect.left,
-              y: rect.top,
-              h: rect.height,
-              w: rect.width
+          const el = document.querySelector(".global-scene-container")
+          if (el) {
+            const rect = el.getBoundingClientRect()
+            console.log("📍 AUDIT: Global Scene Container After Shrink:", {
+              x: rect.left, y: rect.top, w: rect.width, h: rect.height
             })
           }
         }
-      }, "+=1") // Small pause after the swap before this starts
+      }, "phase7Start")
+
+      // 7.2: إظهار الـ 5 صور الجديدة (خارج الحاوية المقلصة = مقاسها الطبيعي)
+      if (responsiveValues.surroundingCards) {
+        responsiveValues.surroundingCards.forEach((card, i) => {
+          tl.fromTo(
+            `.surrounding-card-${i}`,
+            {
+              opacity: 0,
+              xPercent: card.initialX,
+              yPercent: card.initialY,
+              scale: 0.8
+            },
+            {
+              opacity: 1,
+              xPercent: 0,
+              yPercent: 0,
+              scale: 1,
+              duration: 1.2,
+              ease: "power2.out",
+              onComplete: () => {
+                const el = document.querySelector(`.surrounding-card-wrapper-${i}`)
+                if (el) {
+                  const rect = el.getBoundingClientRect()
+                  console.log(`📍 AUDIT: Surrounding Card ${i}:`, {
+                    x: rect.left, y: rect.top, w: rect.width, h: rect.height
+                  })
+                }
+              }
+            },
+            `phase7Start+=${1.5 + (i * 0.3)}`
+          )
+        })
+      }
 
       // Phase 8: Hold / Freeze
       // =================================================================================================
-      // Keep everything fixed in place for a while after the shrink
       tl.to({}, {
-        duration: 2, // Adjust this value to control how long it stays fixed
-        onStart: () => console.log("🛑 PHASE 8: Hold/Freeze Initiated")
+        duration: 2,
+        onStart: () => console.log("🛑 PHASE 8: Hold/Freeze - Final Layout")
       })
     })
 
