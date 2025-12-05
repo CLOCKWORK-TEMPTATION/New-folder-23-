@@ -1,95 +1,66 @@
-# Dependencies
-node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# Next.js
-.next/
-out/
-build/
-dist/
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
+# testing
+/coverage
 *.lcov
 
-# nyc test coverage
-.nyc_output
+# next.js
+/.next/
+/out/
+/build
+/dist/
 
-# Grunt intermediate storage
-.grunt
+# production
+/build
 
-# Bower dependency directory
-bower_components
+# misc
+.DS_Store
+*.pem
+Thumbs.db
 
-# node-waf configuration
-.lock-wscript
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Compiled binary addons
-build/Release
-
-# Dependency directories
-jspm_packages/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
+# local env files
+.env*.local
 .env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# parcel-bundler cache
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Additional dependencies and cache
+bower_components
+jspm_packages/
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+
+# Cache directories
 .cache
 .parcel-cache
-
-# Next.js build output
-.next
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-public
-
-# Storybook build outputs
-.out
-.storybook-out
-
-# Temporary folders
-tmp/
-temp/
-
-# Logs
-logs
-*.log
+.nyc_output
+.grunt
 
 # Runtime data
 pids
@@ -104,6 +75,20 @@ pids
 *.swo
 *~
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+logs
+*.log
+
+# Temporary folders
+tmp/
+temp/
+
+# Storybook
+.out
+.storybook-out
+
+# Nx
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
