@@ -294,68 +294,60 @@ export const useHeroAnimation = (
 
       tl.addLabel("phase7Start", "+=0.5")
 
-      // 7.0: إزالة overflow-hidden من triggerRef + تحويل phase-5-group لـ fixed
-      // هذا يحل مشكلة الحجب بدون نقل DOM
+      // 7.0: الإعداد - تحويل الهيكل للـ fixed positioning
+      // الحل الهندسي: استخدام GSAP set() لـ position + centered transforms
       tl.call(() => {
-        // إزالة overflow-hidden من triggerRef
-        if (triggerRef.current) {
-          triggerRef.current.style.overflow = "visible"
-          console.log("🔓 PHASE 7.0a: Removed overflow-hidden from triggerRef")
-        }
-
-        // تحويل phase-5-group لـ fixed
         const phase5Group = document.querySelector(".phase-5-group") as HTMLElement
         if (phase5Group) {
           phase5Group.style.position = "fixed"
-          phase5Group.style.top = "0"
-          phase5Group.style.left = "0"
+          phase5Group.style.top = "50%"
+          phase5Group.style.left = "50%"
           phase5Group.style.width = "100vw"
           phase5Group.style.height = "100vh"
           phase5Group.style.zIndex = "200"
-
-          const rect = phase5Group.getBoundingClientRect()
-          console.log("🔓 PHASE 7.0b: phase-5-group is now FIXED", {
-            x: rect.left, y: rect.top, w: rect.width, h: rect.height
-          })
+          console.log("🔧 PHASE 7.0: phase-5-group repositioned as FIXED at center")
         }
       }, [], "phase7Start")
 
-      // إزالة الـ transforms السابقة من phase-5-group قبل التقليص
+      // Clear previous transforms from the animation chain
       tl.set(".phase-5-group", {
-        clearProps: "scale,x,y,rotation,transform"
+        x: 0,
+        y: 0,
+        xPercent: -50,
+        yPercent: -50,
+        scale: 1,
       }, "phase7Start")
 
-      // 7.1: تجميد + تقليص 75% → تبقى في المنتصف (transformOrigin: center)
+      // 7.1: تقليص 75% من المنتصف
       tl.to(".phase-5-group", {
         scale: 0.75,
-        transformOrigin: "center center",  // التقليص من المنتصف → تبقى في المنتصف
         duration: 1.5,
         ease: "power2.inOut",
-        onStart: () => console.log("🚀 PHASE 7.1: Freezing + Shrinking to 75% (Center)"),
+        onStart: () => console.log("🚀 PHASE 7.1: Shrinking to 75%"),
         onComplete: () => {
           const el = document.querySelector(".phase-5-group")
           if (el) {
             const rect = el.getBoundingClientRect()
-            console.log("📍 AUDIT: After Shrink (Center):", {
+            console.log("📍 AUDIT: After Shrink:", {
               x: rect.left, y: rect.top, w: rect.width, h: rect.height
             })
           }
         }
       }, "phase7Start+=0.1")
 
-      // 7.2: تحريك الوحدة المجمدة من المنتصف إلى أعلى-يمين
-      // الفراغ 25% سيكون في يسار + أسفل
+      // 7.2: تحريك من المنتصف إلى أعلى-يمين
+      // التحريك: 12.5% إلى اليمين (من المنتصف) و 4% إلى الأعلى (من المنتصف)
       tl.to(".phase-5-group", {
-        x: "12.5%",   // تتحرك لليمين بـ 12.5% (نصف الـ 25%)
-        y: "-8%",     // تتحرك لأعلى بـ 8% (تحت الـ Header مباشرة)
+        xPercent: -50 + 12.5,
+        yPercent: -50 - 4,
         duration: 1.5,
         ease: "power2.inOut",
-        onStart: () => console.log("🚀 PHASE 7.2: Moving from Center to Top-Right"),
+        onStart: () => console.log("🚀 PHASE 7.2: Moving to Top-Right"),
         onComplete: () => {
           const el = document.querySelector(".phase-5-group")
           if (el) {
             const rect = el.getBoundingClientRect()
-            console.log("📍 AUDIT: After Move to Top-Right:", {
+            console.log("📍 AUDIT: After Move:", {
               x: rect.left, y: rect.top, w: rect.width, h: rect.height
             })
           }
@@ -368,12 +360,12 @@ export const useHeroAnimation = (
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => console.log("🎨 PHASE 7.2b: phase-5-group background is now transparent")
-      }, "phase7Start+=3")
+      }, "phase7Start+=2.5")
 
       // 7.3: الصفحة البيضاء تصعد من أسفل (خلف الصور والـ V-Shape)
       // z-index: 50 (أقل من phase-5-group التي لها z-200)
       tl.to(".grid-page-section", {
-        top: "0",  // تصعد من 100vh إلى 0
+        transform: "translateY(0)",  // تصعد من 100vh إلى 0
         duration: 2,
         ease: "power2.inOut",
         onStart: () => console.log("🚀 PHASE 7.3: White page rising (behind container)"),

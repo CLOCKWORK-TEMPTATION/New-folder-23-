@@ -22,7 +22,7 @@ export const HeroAnimation = () => {
     <div ref={containerRef} className="bg-black min-h-screen text-white" dir="rtl">
       <div
         ref={triggerRef}
-        className="h-screen w-full relative overflow-hidden flex flex-col items-center justify-center"
+        className="h-screen w-full relative overflow-visible flex flex-col items-center justify-center"
       >
         {/* Layer 1: The Mask Animation */}
         <div className="video-mask-wrapper absolute inset-0 z-50 bg-white">
@@ -48,7 +48,7 @@ export const HeroAnimation = () => {
         </div>
 
         {/* Global Scene Container for Phase 6 Zoom Out */}
-        <div className="global-scene-container absolute inset-0 w-full h-full transform-style-3d">
+        <div className="global-scene-container absolute inset-0 w-full h-full">
 
           {/* Phase 5 Group: Container + Stacking Cards + خلفية سوداء */}
           <div className="phase-5-group absolute inset-0 w-full h-full bg-black">
@@ -142,8 +142,8 @@ export const HeroAnimation = () => {
       {/* ===== GRID PAGE - الصفحة البيضاء (تصعد من أسفل) ===== */}
       {/* z-[50] أقل من phase-5-group التي ستصبح fixed بـ z-[200] */}
       <div
-        className="grid-page-section fixed left-0 w-full h-full bg-white/50 z-[50]"
-        style={{ top: "100vh" }}
+        className="grid-page-section fixed left-0 right-0 top-0 w-full h-full bg-white/50 z-[50]"
+        style={{ transform: "translateY(100vh)" }}
       >
         {/* الـ 7 صور الجديدة */}
         <div className="grid-cards-container absolute inset-0 w-full h-full z-0">
