@@ -34,11 +34,9 @@ export const HeroAnimation = () => {
         </div>
 
         {/* Fixed Header - Independent from V-Shape Container */}
-        <div className="fixed-header fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-sm border-b border-white/10 z-[100] opacity-0 flex items-center justify-center">
+        <div className="fixed-header fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-sm border-b border-white/10 z-[500] opacity-0 flex items-center justify-center">
           <span className="font-bold text-sm md:text-base lg:text-xl tracking-widest text-white/80">النسخة</span>
         </div>
-
-        {/* Layer 2: V-Shape Container - MOVED INSIDE GLOBAL SCENE */}
 
         {/* Layer 3: Dedication Layer - Independent to fade out first */}
         <div className="dedication-layer absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none">
@@ -52,8 +50,8 @@ export const HeroAnimation = () => {
         {/* Global Scene Container for Phase 6 Zoom Out */}
         <div className="global-scene-container absolute inset-0 w-full h-full transform-style-3d">
 
-          {/* Phase 5 Group: Container + Stacking Cards */}
-          <div className="phase-5-group absolute inset-0 w-full h-full">
+          {/* Phase 5 Group: Container + Stacking Cards + خلفية سوداء */}
+          <div className="phase-5-group absolute inset-0 w-full h-full bg-black">
 
             {/* V-Shape Container (Moved here) */}
             <div className="v-shape-container absolute top-0 left-0 w-full h-full z-40 m-0 p-0">
@@ -141,6 +139,41 @@ export const HeroAnimation = () => {
         </div>
       </div>
 
+      {/* ===== GRID PAGE - الصفحة البيضاء (تصعد من أسفل) ===== */}
+      {/* z-[50] أقل من phase-5-group التي ستصبح fixed بـ z-[200] */}
+      <div
+        className="grid-page-section fixed left-0 w-full h-full bg-white/50 z-[50]"
+        style={{ top: "100vh" }}
+      >
+        {/* الـ 7 صور الجديدة */}
+        <div className="grid-cards-container absolute inset-0 w-full h-full z-0">
+          {responsiveValues.surroundingCards?.map((card, index) => (
+            <div
+              key={`grid-card-wrapper-${index}`}
+              className={`grid-card-wrapper-${index} absolute`}
+              style={{
+                top: card.top,
+                left: card.left,
+                width: card.width,
+                height: card.height,
+                zIndex: 10 + index,
+                boxSizing: "border-box",
+                padding: "4px"
+              }}
+            >
+              <StackingImageCard
+                src={images[(index + 5) % images.length] || "/placeholder.svg"}
+                alt={`Grid Card ${index + 1}`}
+                index={index + 10}
+                className={`grid-card-${index} opacity-0 w-full h-full`}
+                width="100%"
+                height="100%"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-bounce text-white/50">
         <svg
           width="24"
@@ -155,6 +188,6 @@ export const HeroAnimation = () => {
           <path d="M12 5v14M19 12l-7 7-7-7" />
         </svg>
       </div>
-    </div >
+    </div>
   )
 }

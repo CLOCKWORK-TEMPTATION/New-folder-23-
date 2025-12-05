@@ -38,7 +38,7 @@ export const useHeroAnimation = (
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top",
-          end: "+=10000", // Extended for Phase 6
+          end: "+=12000", // Extended for Phase 7 (white page transition)
           scrub: 2.5,
           pin: true,
           anticipatePin: 1,
@@ -282,72 +282,142 @@ export const useHeroAnimation = (
           ease: "power2.inOut"
         })
 
-      // Phase 7: Shrink & Surround
       // =================================================================================================
-      // الخطة:
-      // 7.1: تقليص global-scene-container بالكامل (V-Shape + 5 صور + 5 صور جديدة)
-      //      هذا يضمن أن كل العناصر تتقلص معاً بنفس النسبة
-      // 7.2: الـ surroundingCards ستظهر في مواقعها المحددة
+      // PHASE 7: Freeze → Shrink 75% (Center) → Move to Top-Right → White Page → 7 Images
+      // =================================================================================================
+      // الخطوات:
+      // 7.1: تجميد + تقليص 75% → تبقى في المنتصف
+      // 7.2: تحريك الوحدة المجمدة من المنتصف إلى أعلى-يمين → الفراغ 25% في يسار + أسفل
+      // 7.3: الصفحة البيضاء تصعد (خلف الصور والـ V-Shape)
+      // 7.4: الصور الـ 7 تظهر
       // =================================================================================================
 
       tl.addLabel("phase7Start", "+=0.5")
 
-      // 7.1: تقليص المشهد العام بالكامل
-      tl.to(".global-scene-container", {
-        scale: 0.6,
-        transformOrigin: "center center",
-        duration: 2.5,
+      // 7.0: إزالة overflow-hidden من triggerRef + تحويل phase-5-group لـ fixed
+      // هذا يحل مشكلة الحجب بدون نقل DOM
+      tl.call(() => {
+        // إزالة overflow-hidden من triggerRef
+        if (triggerRef.current) {
+          triggerRef.current.style.overflow = "visible"
+          console.log("🔓 PHASE 7.0a: Removed overflow-hidden from triggerRef")
+        }
+
+        // تحويل phase-5-group لـ fixed
+        const phase5Group = document.querySelector(".phase-5-group") as HTMLElement
+        if (phase5Group) {
+          phase5Group.style.position = "fixed"
+          phase5Group.style.top = "0"
+          phase5Group.style.left = "0"
+          phase5Group.style.width = "100vw"
+          phase5Group.style.height = "100vh"
+          phase5Group.style.zIndex = "200"
+
+          const rect = phase5Group.getBoundingClientRect()
+          console.log("🔓 PHASE 7.0b: phase-5-group is now FIXED", {
+            x: rect.left, y: rect.top, w: rect.width, h: rect.height
+          })
+        }
+      }, [], "phase7Start")
+
+      // إزالة الـ transforms السابقة من phase-5-group قبل التقليص
+      tl.set(".phase-5-group", {
+        clearProps: "scale,x,y,rotation,transform"
+      }, "phase7Start")
+
+      // 7.1: تجميد + تقليص 75% → تبقى في المنتصف (transformOrigin: center)
+      tl.to(".phase-5-group", {
+        scale: 0.75,
+        transformOrigin: "center center",  // التقليص من المنتصف → تبقى في المنتصف
+        duration: 1.5,
         ease: "power2.inOut",
-        onStart: () => console.log("🚀 PHASE 7.1: Shrinking global-scene-container"),
+        onStart: () => console.log("🚀 PHASE 7.1: Freezing + Shrinking to 75% (Center)"),
         onComplete: () => {
-          const el = document.querySelector(".global-scene-container")
+          const el = document.querySelector(".phase-5-group")
           if (el) {
             const rect = el.getBoundingClientRect()
-            console.log("📍 AUDIT: Global Scene Container After Shrink:", {
+            console.log("📍 AUDIT: After Shrink (Center):", {
               x: rect.left, y: rect.top, w: rect.width, h: rect.height
             })
           }
         }
-      }, "phase7Start")
+      }, "phase7Start+=0.1")
 
-      // 7.2: إظهار الـ 5 صور الجديدة (خارج الحاوية المقلصة = مقاسها الطبيعي)
+      // 7.2: تحريك الوحدة المجمدة من المنتصف إلى أعلى-يمين
+      // الفراغ 25% سيكون في يسار + أسفل
+      tl.to(".phase-5-group", {
+        x: "12.5%",   // تتحرك لليمين بـ 12.5% (نصف الـ 25%)
+        y: "-8%",     // تتحرك لأعلى بـ 8% (تحت الـ Header مباشرة)
+        duration: 1.5,
+        ease: "power2.inOut",
+        onStart: () => console.log("🚀 PHASE 7.2: Moving from Center to Top-Right"),
+        onComplete: () => {
+          const el = document.querySelector(".phase-5-group")
+          if (el) {
+            const rect = el.getBoundingClientRect()
+            console.log("📍 AUDIT: After Move to Top-Right:", {
+              x: rect.left, y: rect.top, w: rect.width, h: rect.height
+            })
+          }
+        }
+      }, "phase7Start+=1.6")
+
+      // 7.2b: جعل خلفية phase-5-group شفافة (لكن v-shape-container تبقى سوداء)
+      tl.to(".phase-5-group", {
+        backgroundColor: "transparent",
+        duration: 0.5,
+        ease: "power2.inOut",
+        onComplete: () => console.log("🎨 PHASE 7.2b: phase-5-group background is now transparent")
+      }, "phase7Start+=3")
+
+      // 7.3: الصفحة البيضاء تصعد من أسفل (خلف الصور والـ V-Shape)
+      // z-index: 50 (أقل من phase-5-group التي لها z-200)
+      tl.to(".grid-page-section", {
+        top: "0",  // تصعد من 100vh إلى 0
+        duration: 2,
+        ease: "power2.inOut",
+        onStart: () => console.log("🚀 PHASE 7.3: White page rising (behind container)"),
+      }, "phase7Start+=3.5")
+
+      // 7.4: إظهار الـ 7 صور الجديدة على الصفحة البيضاء
       if (responsiveValues.surroundingCards) {
         responsiveValues.surroundingCards.forEach((card, i) => {
           tl.fromTo(
-            `.surrounding-card-${i}`,
+            `.grid-card-${i}`,
             {
               opacity: 0,
-              xPercent: card.initialX,
-              yPercent: card.initialY,
-              scale: 0.8
+              x: card.initialX * 1.5,
+              y: card.initialY * 1.5,
+              scale: 0.8,
             },
             {
               opacity: 1,
-              xPercent: 0,
-              yPercent: 0,
+              x: 0,
+              y: 0,
               scale: 1,
-              duration: 1.2,
+              duration: 0.5,
               ease: "power2.out",
               onComplete: () => {
-                const el = document.querySelector(`.surrounding-card-wrapper-${i}`)
+                const el = document.querySelector(`.grid-card-${i}`)
                 if (el) {
                   const rect = el.getBoundingClientRect()
-                  console.log(`📍 AUDIT: Surrounding Card ${i}:`, {
+                  console.log(`📍 AUDIT: Grid Card ${i}:`, {
                     x: rect.left, y: rect.top, w: rect.width, h: rect.height
                   })
                 }
               }
             },
-            `phase7Start+=${1.5 + (i * 0.3)}`
+            `phase7Start+=${5.5 + (i * 0.1)}`
           )
         })
       }
 
-      // Phase 8: Hold / Freeze
+      // =================================================================================================
+      // PHASE 8: Hold / Freeze - Final Layout
       // =================================================================================================
       tl.to({}, {
         duration: 2,
-        onStart: () => console.log("🛑 PHASE 8: Hold/Freeze - Final Layout")
+        onStart: () => console.log("🛑 PHASE 8: Grid Complete - 12 Images + V-Shape")
       })
     })
 
