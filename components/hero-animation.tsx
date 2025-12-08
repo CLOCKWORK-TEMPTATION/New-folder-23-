@@ -110,12 +110,12 @@ export const HeroAnimation = () => {
             </div>
           </div>
 
-          {/* Phase 6 Extension */}
+          {/* Phase 6 Extension - 12 كارت محيطة بالمركز */}
           <div className="phase-6-extension absolute inset-0 w-full h-full pointer-events-none">
             {responsiveValues.surroundingCards?.map((card, index) => (
               <div
                 key={`surround-wrapper-${index}`}
-                className={`surrounding-card-wrapper-${index} absolute`}
+                className={`surrounding-card-wrapper-${index} absolute overflow-hidden rounded-lg`}
                 style={{
                   top: card.top,
                   left: card.left,
@@ -128,7 +128,7 @@ export const HeroAnimation = () => {
                   src={images[(index + 5) % images.length] || "/placeholder.svg"}
                   alt={`Surrounding Card ${index + 1}`}
                   index={index + 10}
-                  className={`surrounding-card-${index} opacity-0 w-full h-full`}
+                  className={`surrounding-card-${index} opacity-0 w-full h-full rounded-lg`}
                   width="100%"
                   height="100%"
                 />
@@ -142,15 +142,15 @@ export const HeroAnimation = () => {
       {/* ===== GRID PAGE - الصفحة البيضاء (تصعد من أسفل) ===== */}
       {/* z-[50] أقل من phase-5-group التي ستصبح fixed بـ z-[200] */}
       <div
-        className="grid-page-section fixed left-0 right-0 top-0 w-full h-full bg-white/50 z-[50]"
+        className="grid-page-section fixed left-0 right-0 top-0 w-full h-full bg-white z-[50]"
         style={{ transform: "translateY(100vh)" }}
       >
-        {/* الـ 7 صور الجديدة */}
+        {/* شبكة 4×4 - 12 كارت محيطة + مركز 2×2 */}
         <div className="grid-cards-container absolute inset-0 w-full h-full z-0">
           {responsiveValues.surroundingCards?.map((card, index) => (
             <div
               key={`grid-card-wrapper-${index}`}
-              className={`grid-card-wrapper-${index} absolute`}
+              className={`grid-card-wrapper-${index} absolute overflow-hidden rounded-lg`}
               style={{
                 top: card.top,
                 left: card.left,
@@ -158,19 +158,32 @@ export const HeroAnimation = () => {
                 height: card.height,
                 zIndex: 10 + index,
                 boxSizing: "border-box",
-                padding: "4px"
               }}
             >
               <StackingImageCard
                 src={images[(index + 5) % images.length] || "/placeholder.svg"}
                 alt={`Grid Card ${index + 1}`}
                 index={index + 10}
-                className={`grid-card-${index} opacity-0 w-full h-full`}
+                className={`grid-card-${index} opacity-0 w-full h-full rounded-lg`}
                 width="100%"
                 height="100%"
               />
             </div>
           ))}
+          
+          {/* المركز 2×2 - محجوز للـ phase-5-group */}
+          <div 
+            className="center-placeholder absolute pointer-events-none"
+            style={{
+              top: "25.5%",
+              left: "25.5%",
+              width: "49%",
+              height: "49%",
+              zIndex: 5,
+              // للتصحيح البصري فقط - يمكن إزالته لاحقاً
+              // border: "2px dashed rgba(0,0,0,0.2)",
+            }}
+          />
         </div>
       </div>
 

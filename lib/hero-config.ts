@@ -82,29 +82,29 @@ class HeroConfiguration {
         { top: "33%", left: "30%", rotation: -20 },
       ],
 
-      // V-Shape Container (Absolute Positioning)
+      // V-Shape Container (2×2 Center in 4×4 Grid)
+      // الحساب: المركز يبدأ من 25.5% ويمتد 49% (25.5% + 24% + 0.5% + 24% = 74%)
       containerConstraints: {
-        x: "26vw",
-        y: "28.5vh",
-        width: "48vw",
-        height: "43vh",
+        x: "25.5%",       // يبدأ من العمود الثاني
+        y: "25.5%",       // يبدأ من الصف الثاني
+        width: "49%",     // يغطي عمودين (24% + 1% gap + 24%)
+        height: "49%",    // يغطي صفين
         scale: 1,
-        transformOrigin: "",
+        transformOrigin: "center center",
         borderRadius: "12px",
         border: "1px solid rgba(255, 255, 255, 0.2)",
         boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
         overflow: "hidden"
       },
 
-      // Stacking Cards Positions
+      // Stacking Cards Positions (داخل المركز 2×2)
+      // الكروت تتوزع داخل الحاوية المركزية
       stackingCards: [
-        { top: "5%", left: "5%", rotation: 0, scale: 1, width: "28vw", height: "28vh" },
-        { top: "5%", left: "36%", rotation: 0, scale: 1, width: "28vw", height: "28vh" },  // Top-Center
-        { top: "5%", left: "67%", rotation: 0, scale: 1, width: "28vw", height: "28vh" },  // Top-Right
-
-        // Right Column (2 Images)
-        { top: "36%", left: "67%", rotation: 0, scale: 1, width: "28vw", height: "28vh" }, // Middle-Right
-        { top: "67%", left: "67%", rotation: 0, scale: 1, width: "28vw", height: "28vh" }, // Bottom-Right
+        { top: "3%", left: "3%", rotation: 0, scale: 1, width: "45%", height: "45%" },    // أعلى-يسار
+        { top: "3%", left: "52%", rotation: 0, scale: 1, width: "45%", height: "45%" },   // أعلى-يمين
+        { top: "52%", left: "3%", rotation: 0, scale: 1, width: "45%", height: "45%" },   // أسفل-يسار
+        { top: "52%", left: "52%", rotation: 0, scale: 1, width: "45%", height: "45%" },  // أسفل-يمين
+        { top: "25%", left: "25%", rotation: 0, scale: 1, width: "50%", height: "50%" },  // المركز (فوق الكل)
       ],
 
       // Phase 7: Surrounding Cards (L-Shape - 7 صور جديدة)
