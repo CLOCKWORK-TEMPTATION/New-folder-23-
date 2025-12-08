@@ -160,87 +160,76 @@ export const useHeroAnimation = (
           ease: "power2.inOut"
         }, "<+=0.2")
 
-      // 5.2: Move V-Shape Container to Bottom Left & Scale Down
+      // 5.2: Move V-Shape Container to 2×2 Center Position
       if (responsiveValues.containerConstraints) {
-        const container = document.querySelector(".v-shape-container") as HTMLElement
-        if (container) {
-          const {
-            left, right, bottom,
-            x, y, width: absoluteWidth, height: absoluteHeight,
-            transformOrigin,
-            borderRadius, border, boxShadow, overflow
-          } = responsiveValues.containerConstraints
+        const {
+          x, y, width: absoluteWidth, height: absoluteHeight,
+          transformOrigin,
+          borderRadius, border, boxShadow, overflow
+        } = responsiveValues.containerConstraints
 
-          const viewportWidth = window.innerWidth
-          const viewportHeight = window.innerHeight
+        const viewportWidth = window.innerWidth
+        const viewportHeight = window.innerHeight
 
-          // Helper to parse dimensions (px, vw, vh, %)
-          const parseDim = (val: string | number | undefined, ref: number): number => {
-            if (val === undefined) return 0
-            if (typeof val === 'number') return val
-            if (typeof val === 'string') {
-              if (val.includes('vw')) return (parseFloat(val) / 100) * window.innerWidth
-              if (val.includes('vh')) return (parseFloat(val) / 100) * window.innerHeight
-              if (val.includes('px')) return parseFloat(val)
-              if (val.includes('%')) return (parseFloat(val) / 100) * ref
-            }
-            return parseFloat(String(val)) || 0
+        // Helper to parse dimensions (px, vw, vh, %)
+        const parseDim = (val: string | number | undefined, ref: number): number => {
+          if (val === undefined) return 0
+          if (typeof val === 'number') return val
+          if (typeof val === 'string') {
+            const trimmed = val.trim()
+            if (trimmed.includes('vw')) return (parseFloat(trimmed) / 100) * viewportWidth
+            if (trimmed.includes('vh')) return (parseFloat(trimmed) / 100) * viewportHeight
+            if (trimmed.includes('px')) return parseFloat(trimmed)
+            if (trimmed.includes('%')) return (parseFloat(trimmed) / 100) * ref
           }
-
-          let targetWidth = 0
-          let targetHeight = 0
-          let targetX = 0
-          let targetY = 0
-
-          if (x !== undefined && y !== undefined && absoluteWidth !== undefined) {
-            // Absolute Mode
-            targetWidth = parseDim(absoluteWidth, viewportWidth)
-            targetHeight = parseDim(absoluteHeight, viewportHeight)
-            targetX = parseDim(x, viewportWidth)
-            targetY = parseDim(y, viewportHeight)
-
-            // If height is not explicitly set in config (or 0), try to derive it or default
-            if (targetHeight === 0) {
-              // Fallback to previous logic if needed, but we expect height to be set in config now
-              targetHeight = (parseFloat(String(absoluteHeight)) / 100) * viewportHeight || 75
-            }
-          } else if (left !== undefined && right !== undefined && bottom !== undefined) {
-            // Constraint-Based Mode
-            targetWidth = viewportWidth - left - right
-            targetX = left
-
-            // Height logic
-            targetHeight = parseDim(absoluteHeight, viewportHeight)
-            if (targetHeight === 0) targetHeight = (85 / 100) * viewportHeight // Default
-
-            targetY = viewportHeight - bottom - targetHeight
-          }
-
-          tl.to(".v-shape-container", {
-            width: targetWidth,
-            height: targetHeight,
-            x: targetX,
-            y: targetY,
-            scale: 1, // Reset scale to 1 as we are sizing directly
-            transformOrigin: "top left",
-            borderRadius: borderRadius || "0px",
-            border: border || "none",
-            boxShadow: boxShadow || "none",
-            overflow: overflow || "visible",
-            duration: 4,
-            ease: "power3.inOut",
-            onComplete: () => {
-              const el = document.querySelector(".v-shape-container")
-              if (el) {
-                const rect = el.getBoundingClientRect()
-                console.log("📍 AUDIT: Phase 5.2 Container:", {
-                  x: rect.left, y: rect.top, w: rect.width, h: rect.height,
-                  targetX, targetY, targetWidth, targetHeight
-                })
-              }
-            }
-          })
+          return parseFloat(String(val)) || 0
         }
+
+        // حساب أبعاد المركز 2×2
+        const targetWidth = parseDim(absoluteWidth, viewportWidth)
+        const targetHeight = parseDim(absoluteHeight, viewportHeight)
+        const targetX = parseDim(x, viewportWidth)
+        const targetY = parseDim(y, viewportHeight)
+
+        console.log("📐 AUDIT: Phase 5.2 Target Calculations:", {
+          config: { x, y, width: absoluteWidth, height: absoluteHeight },
+          calculated: { targetX, targetY, targetWidth, targetHeight },
+          viewport: { viewportWidth, viewportHeight }
+        })
+
+        tl.to(".v-shape-container", {
+          width: targetWidth,
+          height: targetHeight,
+          x: targetX,
+          y: targetY,
+          scale: 1,
+          transformOrigin: transformOrigin || "top left",
+          borderRadius: borderRadius || "12px",
+          border: border || "none",
+          boxShadow: boxShadow || "none",
+          overflow: overflow || "hidden",
+          duration: 4,
+          ease: "power3.inOut",
+          onComplete: () => {
+            const el = document.querySelector(".v-shape-container")
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              const diff = {
+                xDiff: Math.abs(rect.left - targetX),
+                yDiff: Math.abs(rect.top - targetY),
+                wDiff: Math.abs(rect.width - targetWidth),
+                hDiff: Math.abs(rect.height - targetHeight)
+              }
+              const isAligned = diff.xDiff < 1 && diff.yDiff < 1 && diff.wDiff < 1 && diff.hDiff < 1
+              console.log("📍 AUDIT: Phase 5.2 Container:", {
+                actual: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
+                target: { targetX, targetY, targetWidth, targetHeight },
+                diff,
+                status: isAligned ? "✅ ALIGNED" : "⚠️ MISALIGNED"
+              })
+            }
+          }
+        })
       }
 
       // 5.3: Stacking Cards - Reveal one by one
@@ -311,19 +300,19 @@ export const useHeroAnimation = (
         })
 
       // =================================================================================================
-      // PHASE 7: Freeze → Shrink 75% (Center) → Move to Top-Right → White Page → 7 Images
+      // PHASE 7: الانتقال للشبكة 4×4
       // =================================================================================================
-      // الخطوات:
-      // 7.1: تجميد + تقليص 75% → تبقى في المنتصف
-      // 7.2: تحريك الوحدة المجمدة من المنتصف إلى أعلى-يمين → الفراغ 25% في يسار + أسفل
-      // 7.3: الصفحة البيضاء تصعد (خلف الصور والـ V-Shape)
-      // 7.4: الصور الـ 7 تظهر
+      // التصميم:
+      // [0] [1] [2] [3]    ← الصف العلوي (4 كروت)
+      // [4]  [2×2]   [6]   ← الوسط يسار + المركز 2×2 + الوسط يمين
+      // [5]  [2×2]   [7]   ← الوسط يسار + المركز 2×2 + الوسط يمين
+      // [8] [9] [10] [11]  ← الصف السفلي (4 كروت)
+      // المجموع: 12 كارت محيطة + مركز 2×2
       // =================================================================================================
 
       tl.addLabel("phase7Start", "+=0.5")
 
-      // 7.0: الإعداد - تحويل الهيكل للـ fixed positioning
-      // الحل الهندسي: استخدام GSAP set() لـ position + centered transforms
+      // 7.0: الإعداد - تحويل phase-5-group للـ fixed positioning
       tl.call(() => {
         const phase5Group = document.querySelector(".phase-5-group") as HTMLElement
         if (phase5Group) {
@@ -337,7 +326,7 @@ export const useHeroAnimation = (
         }
       }, [], "phase7Start")
 
-      // Clear previous transforms from the animation chain
+      // إعادة تعيين الـ transforms
       tl.set(".phase-5-group", {
         x: 0,
         y: 0,
@@ -346,7 +335,7 @@ export const useHeroAnimation = (
         scale: 1,
       }, "phase7Start")
 
-      // 7.1: تقليص 75% من المنتصف
+      // 7.1: تقليص 75% من المنتصف (ليصبح المركز 2×2 مناسباً للشبكة)
       tl.to(".phase-5-group", {
         scale: 0.75,
         duration: 1.5,
@@ -357,32 +346,34 @@ export const useHeroAnimation = (
           if (el) {
             const rect = el.getBoundingClientRect()
             console.log("📍 AUDIT: After Shrink:", {
-              x: rect.left, y: rect.top, w: rect.width, h: rect.height
+              x: rect.left, y: rect.top, w: rect.width, h: rect.height,
+              centerX: rect.left + rect.width / 2,
+              centerY: rect.top + rect.height / 2
             })
           }
         }
       }, "phase7Start+=0.1")
 
-      // 7.2: تحريك من المنتصف إلى أعلى-يمين
-      // التحريك: 12.5% إلى اليمين (من المنتصف) و 4% إلى الأعلى (من المنتصف)
+      // 7.2: تحريك للموقع النهائي (المركز 2×2 من الشبكة)
+      // حيث المركز يبدأ من 25.5% ويمتد 49%
       tl.to(".phase-5-group", {
-        xPercent: -50 + 12.5,
-        yPercent: -50 - 4,
+        xPercent: -50,  // يبقى في المنتصف أفقياً
+        yPercent: -50,  // يبقى في المنتصف عمودياً
         duration: 1.5,
         ease: "power2.inOut",
-        onStart: () => console.log("🚀 PHASE 7.2: Moving to Top-Right"),
+        onStart: () => console.log("🚀 PHASE 7.2: Positioning for 4×4 Grid"),
         onComplete: () => {
           const el = document.querySelector(".phase-5-group")
           if (el) {
             const rect = el.getBoundingClientRect()
-            console.log("📍 AUDIT: After Move:", {
+            console.log("📍 AUDIT: After Position:", {
               x: rect.left, y: rect.top, w: rect.width, h: rect.height
             })
           }
         }
       }, "phase7Start+=1.6")
 
-      // 7.2b: جعل خلفية phase-5-group شفافة (لكن v-shape-container تبقى سوداء)
+      // 7.2b: جعل خلفية phase-5-group شفافة
       tl.to(".phase-5-group", {
         backgroundColor: "transparent",
         duration: 0.5,
@@ -390,54 +381,91 @@ export const useHeroAnimation = (
         onComplete: () => console.log("🎨 PHASE 7.2b: phase-5-group background is now transparent")
       }, "phase7Start+=2.5")
 
-      // 7.3: الصفحة البيضاء تصعد من أسفل (خلف الصور والـ V-Shape)
-      // z-index: 50 (أقل من phase-5-group التي لها z-200)
+      // 7.3: الصفحة البيضاء تصعد من أسفل
       tl.to(".grid-page-section", {
-        transform: "translateY(0)",  // تصعد من 100vh إلى 0
+        transform: "translateY(0)",
         duration: 2,
         ease: "power2.inOut",
-        onStart: () => console.log("🚀 PHASE 7.3: White page rising (behind container)"),
+        onStart: () => console.log("🚀 PHASE 7.3: White grid page rising"),
       }, "phase7Start+=3.5")
 
-      // 7.4: إظهار الـ 7 صور الجديدة على الصفحة البيضاء
+      // 7.4: إظهار الـ 12 كارت المحيطة
       if (responsiveValues.surroundingCards) {
-        responsiveValues.surroundingCards.forEach((card, i) => {
+        // ترتيب الظهور: العلوي → اليسار → اليمين → السفلي
+        const animationOrder = [
+          // الصف العلوي (0-3) - من اليمين لليسار
+          { index: 3, delay: 0 },
+          { index: 2, delay: 0.08 },
+          { index: 1, delay: 0.16 },
+          { index: 0, delay: 0.24 },
+          // العمود الأيسر (4-5)
+          { index: 4, delay: 0.32 },
+          { index: 5, delay: 0.40 },
+          // العمود الأيمن (6-7)
+          { index: 6, delay: 0.32 },
+          { index: 7, delay: 0.40 },
+          // الصف السفلي (8-11) - من اليمين لليسار
+          { index: 11, delay: 0.48 },
+          { index: 10, delay: 0.56 },
+          { index: 9, delay: 0.64 },
+          { index: 8, delay: 0.72 },
+        ]
+
+        animationOrder.forEach(({ index, delay }) => {
+          const card = responsiveValues.surroundingCards[index]
+          if (!card) return
+
           tl.fromTo(
-            `.grid-card-${i}`,
+            `.grid-card-${index}`,
             {
               opacity: 0,
-              x: card.initialX * 1.5,
-              y: card.initialY * 1.5,
-              scale: 0.8,
+              x: card.initialX * 2,
+              y: card.initialY * 2,
+              scale: 0.7,
             },
             {
               opacity: 1,
               x: 0,
               y: 0,
               scale: 1,
-              duration: 0.5,
-              ease: "power2.out",
+              duration: 0.6,
+              ease: "back.out(1.2)",
               onComplete: () => {
-                const el = document.querySelector(`.grid-card-${i}`)
+                const el = document.querySelector(`.grid-card-${index}`)
                 if (el) {
                   const rect = el.getBoundingClientRect()
-                  console.log(`📍 AUDIT: Grid Card ${i}:`, {
-                    x: rect.left, y: rect.top, w: rect.width, h: rect.height
+                  const expectedTop = (parseFloat(card.top) / 100) * window.innerHeight
+                  const expectedLeft = (parseFloat(card.left) / 100) * window.innerWidth
+                  const isAligned = Math.abs(rect.top - expectedTop) < 5 && Math.abs(rect.left - expectedLeft) < 5
+                  console.log(`📍 AUDIT: Grid Card ${index}:`, {
+                    actual: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
+                    expected: { x: expectedLeft, y: expectedTop },
+                    status: isAligned ? "✅ ALIGNED" : "⚠️ CHECK"
                   })
                 }
               }
             },
-            `phase7Start+=${5.5 + (i * 0.1)}`
+            `phase7Start+=${5.5 + delay}`
           )
         })
       }
 
       // =================================================================================================
-      // PHASE 8: Hold / Freeze - Final Layout
+      // PHASE 8: التجميد النهائي - الشبكة مكتملة
       // =================================================================================================
       tl.to({}, {
         duration: 2,
-        onStart: () => console.log("🛑 PHASE 8: Grid Complete - 12 Images + V-Shape")
+        onStart: () => {
+          console.log("🛑 PHASE 8: Grid Complete - 12 Surrounding Cards + 2×2 Center")
+          // طباعة تقرير نهائي
+          const gridCards = document.querySelectorAll('[class*="grid-card-"]')
+          const centerEl = document.querySelector(".v-shape-container")
+          console.log("📊 FINAL AUDIT:", {
+            totalGridCards: gridCards.length,
+            centerPresent: !!centerEl,
+            expectedTotal: 12
+          })
+        }
       })
     })
 
