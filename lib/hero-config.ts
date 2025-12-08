@@ -13,9 +13,9 @@ export interface ResponsiveConfig {
     bottom?: number;
 
     // Absolute Mode
-    x?: number;
-    y?: number;
-    width?: number;
+    x?: number | string;
+    y?: number | string;
+    width?: number | string;
 
     // Shared
     height: string | number;
@@ -84,10 +84,10 @@ class HeroConfiguration {
 
       // V-Shape Container (Absolute Positioning)
       containerConstraints: {
-        x: 93,
-        y: 330,
-        width: 1150,
-        height: 75,
+        x: "26vw",
+        y: "28.5vh",
+        width: "48vw",
+        height: "43vh",
         scale: 1,
         transformOrigin: "",
         borderRadius: "12px",
@@ -120,18 +120,25 @@ class HeroConfiguration {
       // المجموع: 7 صور (الزاوية 9 مشتركة)
       // =================================================================
       surroundingCards: [
-        // الصف العلوي - صورة 4 (أقصى اليمين - لإكمال الصف)
-        { top: "3%", left: "75%", width: "22vw", height: "22vh", initialX: 80, initialY: -50 },
+        // الصف العلوي (Cards 0-3)
+        { top: "0.5%", left: "0.5%", width: "24%", height: "24%", initialX: -50, initialY: -100 },
+        { top: "0.5%", left: "25.5%", width: "24%", height: "24%", initialX: -20, initialY: -100 },
+        { top: "0.5%", left: "50.5%", width: "24%", height: "24%", initialX: 20, initialY: -100 },
+        { top: "0.5%", left: "75.5%", width: "24%", height: "24%", initialX: 50, initialY: -100 },
 
-        // العمود الأيسر (3 صور: 5, 7, 9)
-        { top: "26%", left: "3%", width: "22vw", height: "22vh", initialX: -80, initialY: 0 },   // صورة 5
-        { top: "50%", left: "3%", width: "22vw", height: "22vh", initialX: -80, initialY: 0 },   // صورة 7
-        { top: "75%", left: "3%", width: "22vw", height: "22vh", initialX: -50, initialY: 80 },  // صورة 9 (الزاوية)
+        // الوسط يسار (Cards 4-5) - المركز محجوز
+        { top: "25.5%", left: "0.5%", width: "24%", height: "24%", initialX: -100, initialY: -20 },
+        { top: "50.5%", left: "0.5%", width: "24%", height: "24%", initialX: -100, initialY: 20 },
 
-        // الصف السفلي (3 صور إضافية: 10, 11, 12)
-        { top: "75%", left: "26%", width: "22vw", height: "22vh", initialX: 0, initialY: 80 },   // صورة 10
-        { top: "75%", left: "50%", width: "22vw", height: "22vh", initialX: 0, initialY: 80 },   // صورة 11
-        { top: "75%", left: "75%", width: "22vw", height: "22vh", initialX: 50, initialY: 80 },  // صورة 12
+        // الوسط يمين (Cards 6-7) - المركز محجوز
+        { top: "25.5%", left: "75.5%", width: "24%", height: "24%", initialX: 100, initialY: -20 },
+        { top: "50.5%", left: "75.5%", width: "24%", height: "24%", initialX: 100, initialY: 20 },
+
+        // الصف السفلي (Cards 8-11)
+        { top: "75.5%", left: "0.5%", width: "24%", height: "24%", initialX: -50, initialY: 100 },
+        { top: "75.5%", left: "25.5%", width: "24%", height: "24%", initialX: -20, initialY: 100 },
+        { top: "75.5%", left: "50.5%", width: "24%", height: "24%", initialX: 20, initialY: 100 },
+        { top: "75.5%", left: "75.5%", width: "24%", height: "24%", initialX: 50, initialY: 100 },
       ]
     }
   }
